@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './ComingSoon.css';
 import hackathonLogo from './assets/hackathon_logo2026-DUlc7zPj.png';
+import { supabase } from './supabase';
 
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx6k6BnNHnan9SGcpy5S4MQ7hKYEpXS0d6z0PiA2leHGDjfQ9FaqRdmqTDM_DmWcq9pdg/exec";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 const ComingSoon: React.FC = () => {
@@ -11,6 +11,8 @@ const ComingSoon: React.FC = () => {
   const [isJoined, setIsJoined] = useState(false);
   const [isError, setIsError] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const t1Ref = useRef<HTMLSpanElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -21,16 +23,18 @@ const ComingSoon: React.FC = () => {
       localStorage.removeItem("kuht_waitlist_joined");
       localStorage.removeItem("kuht_waitlist_name");
       localStorage.removeItem("kuht_waitlist_email");
+      localStorage.removeItem("kuht_waitlist_message");
     }
 
     if (localStorage.getItem("kuht_waitlist_joined") === "1") {
       setIsJoined(true);
       setFullName(localStorage.getItem("kuht_waitlist_name") || "");
       setEmail(localStorage.getItem("kuht_waitlist_email") || "");
+      setSuccessMessage(localStorage.getItem("kuht_waitlist_message") || "");
     }
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const nameTrim = fullName.trim();
     const emailTrim = email.trim().toLowerCase();
@@ -48,34 +52,51 @@ const ComingSoon: React.FC = () => {
 
     setIsSubmitting(true);
 
-    fetch(APPS_SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "joinWaitlist", email: emailTrim, fullName: nameTrim, source: "coming-soon" })
-    }).then(() => {
+    try {
+      const { error } = await supabase
+        .from('coming_soon_signups')
+        .insert([{ full_name: nameTrim, email: emailTrim }]);
+
+      if (error) {
+        console.error('Supabase error:', error);
+        if (error.code === '23505') {
+          throw new Error('DUPLICATE');
+        }
+        throw new Error(error.message);
+      }
+
+      const message = `You are on the waitlist ${nameTrim}`;
+
       localStorage.setItem("kuht_waitlist_joined", "1");
       localStorage.setItem("kuht_waitlist_name", nameTrim);
       localStorage.setItem("kuht_waitlist_email", emailTrim);
+      localStorage.setItem("kuht_waitlist_message", message);
       setIsJoined(true);
+      setSuccessMessage(message);
+    } catch (err: any) {
+      console.error(err);
+      if (err.message === 'DUPLICATE') {
+        setErrorMessage("Your email is already on the waitlist!");
+      } else {
+        setErrorMessage("Something went wrong. Please try again.");
+      }
+      setIsError(true);
+    } finally {
       setIsSubmitting(false);
-    }).catch(() => {
-      localStorage.setItem("kuht_waitlist_joined", "1");
-      localStorage.setItem("kuht_waitlist_name", nameTrim);
-      localStorage.setItem("kuht_waitlist_email", emailTrim);
-      setIsJoined(true);
-      setIsSubmitting(false);
-    });
+    }
   };
 
   const handleReset = () => {
     localStorage.removeItem("kuht_waitlist_joined");
     localStorage.removeItem("kuht_waitlist_name");
     localStorage.removeItem("kuht_waitlist_email");
+    localStorage.removeItem("kuht_waitlist_message");
     setFullName("");
     setEmail("");
     setIsJoined(false);
     setIsError(false);
+    setSuccessMessage("");
+    setErrorMessage("");
   };
 
   // Character scramble effect
@@ -83,7 +104,7 @@ const ComingSoon: React.FC = () => {
     const el = t1Ref.current;
     if (!el) return;
 
-    const original = 'Intelligence,';
+    const original = el.dataset.text || el.textContent || 'KeanUHackThis';
     const pool = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%&*<>/|{}[]';
 
     const scramble = () => {
@@ -216,7 +237,7 @@ const ComingSoon: React.FC = () => {
   }, []);
 
   const firstName = fullName ? fullName.split(" ")[0] : "";
-  const joinedLabel = firstName ? `// ${firstName} · ${email}` : `// ${email}`;
+  const joinedLabel = successMessage || (firstName ? `// ${firstName} · ${email}` : `// ${email}`);
 
   return (
     <div className="coming-soon-container">
@@ -227,7 +248,7 @@ const ComingSoon: React.FC = () => {
         {/* announce bar */}
         <div className="announce">
           <span className="rule"></span>
-          <span>// Waitlist is open &middot; Applications open Fall 2026</span>
+          <span>// Waitlist is open &middot; Registration opens Fall 2026</span>
           <span className="rule"></span>
         </div>
 
@@ -241,7 +262,7 @@ const ComingSoon: React.FC = () => {
           {/* right: content */}
           <div className="hero-content">
             <h1 className="hero-title">
-              <span className="t1" data-text="Intelligence," ref={t1Ref}>Intelligence,</span>
+              <span className="t1" data-text="KeanUHackThis," ref={t1Ref}>KeanUHackThis</span>
               <span className="t2">Redefined.</span>
               <span className="t3">Spring 2027.</span>
             </h1>
@@ -255,9 +276,9 @@ const ComingSoon: React.FC = () => {
             </div>
 
             <p className="hero-desc">
-              Completely free. 24-hour overnight build in Kean&rsquo;s STEM Building.
+              Completely free. 24-hour overnight build at Kean University.
               Open to all undergrad and grad students 18+, every major, every experience level.
-              Everyone at the hackathon must register.
+              When registration opens, you will be emailed registration information.
             </p>
 
             <div className="cta-wrap" id="cta-wrap">
@@ -278,6 +299,7 @@ const ComingSoon: React.FC = () => {
                   onChange={(e) => {
                     setFullName(e.target.value);
                     setIsError(false);
+                    setErrorMessage("");
                   }}
                   disabled={isJoined || isSubmitting}
                 />
@@ -292,6 +314,7 @@ const ComingSoon: React.FC = () => {
                   onChange={(e) => {
                     setEmail(e.target.value);
                     setIsError(false);
+                    setErrorMessage("");
                   }}
                   disabled={isJoined || isSubmitting}
                 />
@@ -308,11 +331,12 @@ const ComingSoon: React.FC = () => {
                       <button type="submit" className="btn-amber" id="signup-btn" disabled={isSubmitting}>
                         {isSubmitting ? 'Sending…' : 'Join waitlist →'}
                       </button>
-                      <a href="mailto:acmkeanchapter@kean.edu" className="btn-outline">Sponsor us</a>
+                      <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScmMw0Noebqr39XY5PMUeYOhC0F8jpGAUtZhYthNRdqT9KaeA/viewform?usp=publish-editor" className="btn-outline">Sponsor us</a>
                     </>
                   )}
                 </div>
               </form>
+              {errorMessage && <p className="signup-error-text" style={{ color: '#ff4d4d', marginTop: '10px', fontSize: '0.9rem', fontWeight: 500 }}>{errorMessage}</p>}
               <p className="signup-note">// No spam &mdash; one email when applications open.</p>
             </div>
 
