@@ -45,7 +45,8 @@
   height: 100dvh;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* ---- announce bar ---- */
@@ -75,7 +76,7 @@
   grid-template-columns: 1fr 1fr;
   align-items: stretch;
   gap: clamp(16px, 3vw, 48px);
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* ---- logo panel (left) ---- */
