@@ -1,0 +1,436 @@
+/* ---- reset & base (imported or kept in App/index css, but localized here for completeness) ---- */
+.coming-soon-container {
+  background: #04091c;
+  color: #d0dcf0;
+  font-family: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  height: 100vh;
+  height: 100dvh;
+  position: relative;
+}
+
+.coming-soon-container a { color: inherit; text-decoration: none; }
+.coming-soon-container button { font-family: inherit; cursor: pointer; }
+.coming-soon-container ::selection { background: #3060c8; color: #fff; }
+
+/* ---- aurora — badge blue + cream, weighted left toward the logo ---- */
+.aurora {
+  position: absolute; inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 85% 75% at 8% 55%,  rgba(48,96,200,0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 55% at 28% 85%,  rgba(217,194,122,0.12) 0%, transparent 58%),
+    radial-gradient(ellipse 50% 45% at 75% 20%,  rgba(48,96,200,0.10) 0%, transparent 58%),
+    radial-gradient(ellipse 40% 40% at 55% 50%,  rgba(29,56,120,0.08) 0%, transparent 65%);
+}
+
+/* ---- particle canvas ---- */
+#bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.80;
+}
+
+/* ---- page shell ---- */
+.page {
+  position: relative;
+  z-index: 10;
+  height: 100vh;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+}
+
+/* ---- announce bar ---- */
+.announce {
+  padding: 10px clamp(20px, 4vw, 60px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #4a6aaa;
+}
+.announce .rule {
+  flex: 1;
+  max-width: 80px;
+  height: 1px;
+  background: #0c1e3e;
+}
+
+/* ---- hero: split layout ---- */
+.hero {
+  padding: clamp(8px, 1.5vh, 20px) clamp(20px, 5vw, 72px) clamp(6px, 1vh, 16px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+  gap: clamp(16px, 3vw, 48px);
+  overflow: hidden;
+}
+
+/* ---- logo panel (left) ---- */
+.hero-logo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  animation: rise 1.4s 0.08s cubic-bezier(.2,.7,.2,1) forwards;
+  /* glow on wrapper so drop-shadow wraps the clipped circle */
+  filter:
+    drop-shadow(0 0 28px rgba(48,96,200,0.55))
+    drop-shadow(0 0 65px rgba(48,96,200,0.25))
+    drop-shadow(0 0 110px rgba(217,194,122,0.20));
+}
+.hero-logo img {
+  width: min(70vh, 50vw);
+  height: min(70vh, 50vw);
+  object-fit: contain;
+  /* clip-path removes the white square corners, leaving only the circular badge */
+  clip-path: circle(47% at 50% 50%);
+  animation: logo-float 7s ease-in-out infinite;
+}
+@keyframes logo-float {
+  0%,100% { transform: translateY(0px) scale(1.00); }
+  50%      { transform: translateY(-10px) scale(1.01); }
+}
+
+/* ---- content panel (right) ---- */
+.hero-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: clamp(8px, 1.2vh, 16px);
+  padding-top: clamp(16px, 5vh, 64px);
+  padding-bottom: clamp(12px, 3vh, 40px);
+}
+
+.hero-title { width: 100%; line-height: 0.88; letter-spacing: -0.04em; text-align: left; }
+
+/* "Intelligence," — cool blue-white, glitch in cream + badge-blue */
+.hero-title .t1 {
+  display: block;
+  position: relative;
+  font-size: clamp(34px, 5.2vw, 96px);
+  font-weight: 800;
+  font-variation-settings: "wdth" 100, "opsz" 96;
+  color: #d0dcf0;
+  opacity: 0;
+  animation: rise 1.2s 0.12s cubic-bezier(.2,.7,.2,1) forwards;
+}
+.hero-title .t1::before,
+.hero-title .t1::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%;
+  font: inherit;
+  font-variation-settings: inherit;
+  letter-spacing: inherit;
+  opacity: 0;
+}
+/* top glitch slice: ice-white */
+.hero-title .t1::before {
+  color: #e8f0ff;
+  clip-path: polygon(0 0, 100% 0, 100% 38%, 0 38%);
+  animation: glitch-top 2.8s 2.5s infinite;
+}
+/* bottom glitch slice: badge blue */
+.hero-title .t1::after {
+  color: #5c8de8;
+  clip-path: polygon(0 62%, 100% 62%, 100% 100%, 0 100%);
+  animation: glitch-bot 2.8s 2.6s infinite;
+}
+@keyframes glitch-top {
+  0%,68%,100% { opacity:0; transform:translate(0); }
+  70%  { opacity:.9; transform:translate(-4px,-1px); }
+  72%  { opacity:0; }
+  76%  { opacity:.7; transform:translate(3px,0); }
+  78%  { opacity:0; }
+  84%  { opacity:.5; transform:translate(-2px,1px); }
+  86%  { opacity:0; }
+}
+@keyframes glitch-bot {
+  0%,70%,100% { opacity:0; transform:translate(0); }
+  72%  { opacity:.8; transform:translate(4px,1px); }
+  74%  { opacity:0; }
+  78%  { opacity:.6; transform:translate(-3px,-1px); }
+  80%  { opacity:0; }
+  86%  { opacity:.4; transform:translate(2px,0); }
+  88%  { opacity:0; }
+}
+
+/* "Redefined." — bright ice-white, high contrast on navy, badge-blue glow */
+.hero-title .t2 {
+  display: block;
+  font-size: clamp(38px, 6vw, 110px);
+  font-weight: 800;
+  font-style: italic;
+  font-variation-settings: "wdth" 80, "opsz" 96;
+  color: #e8f0ff;
+  line-height: 0.86;
+  opacity: 0;
+  animation:
+    rise 1.4s 0.26s cubic-bezier(.2,.7,.2,1) forwards,
+    white-breathe 1.8s 2s ease-in-out infinite;
+}
+@keyframes white-breathe {
+  0%,100% { text-shadow: 0 0 18px rgba(92,141,232,0.35), 0 0 55px rgba(48,96,200,0.12); }
+  50%      { text-shadow: 0 0 40px rgba(92,141,232,0.75), 0 0 110px rgba(48,96,200,0.30), 0 0 180px rgba(48,96,200,0.10); }
+}
+
+/* "Spring 2027." — outline in cool blue-white, breathing stroke */
+.hero-title .t3 {
+  display: block;
+  font-size: clamp(26px, 4.2vw, 80px);
+  font-weight: 800;
+  font-variation-settings: "wdth" 100, "opsz" 96;
+  color: transparent;
+  -webkit-text-stroke: 1.5px #d0dcf0;
+  line-height: 1;
+  margin-top: 0.05em;
+  opacity: 0;
+  animation:
+    rise 1.4s 0.42s cubic-bezier(.2,.7,.2,1) forwards,
+    stroke-breathe 2.4s 2.2s ease-in-out infinite;
+}
+@keyframes stroke-breathe {
+  0%,100% { opacity:.5; -webkit-text-stroke-color: rgba(208,220,240,0.50); }
+  50%      { opacity:1;  -webkit-text-stroke-color: rgba(208,220,240,1); }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- event meta chips ---- */
+.event-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  animation: rise 1.2s 0.58s ease-out forwards;
+}
+.meta-chip {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #3a5895;
+  background: #050d1e;
+  border: 1px solid #0c1e3e;
+  border-radius: 999px;
+  padding: 5px 13px;
+  white-space: nowrap;
+}
+.meta-chip.accent {
+  color: #5c8de8;
+  border-color: rgba(48,96,200,0.35);
+  background: rgba(48,96,200,0.07);
+}
+
+.hero-desc {
+  font-size: clamp(14px, 1.1vw, 16px);
+  line-height: 1.65;
+  color: #8aabdc;
+  max-width: 46ch;
+  text-wrap: pretty;
+  text-align: left;
+  opacity: 0;
+  animation: rise 1.2s 0.72s ease-out forwards;
+  margin: 0;
+}
+
+/* ---- CTA ---- */
+.cta-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  opacity: 0;
+  animation: rise 1.2s 0.88s ease-out forwards;
+  width: 100%;
+}
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 360px;
+}
+.signup-form input {
+  background: #070e20;
+  border: 1px solid #0f2244;
+  border-radius: 10px;
+  padding: 13px 18px;
+  color: #d0dcf0;
+  font-family: "Bricolage Grotesque", sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+.signup-form input:focus { border-color: #3060c8; box-shadow: 0 0 0 3px rgba(48,96,200,0.15); }
+.signup-form input::placeholder { color: #2c4880; font-weight: 300; }
+.signup-form.error input { border-color: #d9c27a; box-shadow: 0 0 0 3px rgba(217,194,122,0.12); }
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* badge blue button — matches the logo's main blue */
+.btn-amber {
+  padding: 11px 22px;
+  background: #3060c8;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: -0.01em;
+  border: none;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+.btn-amber:hover { transform: translateY(-1px); box-shadow: 0 0 28px rgba(48,96,200,0.50); }
+.btn-amber:disabled { opacity: 0.6; cursor: default; transform: none; box-shadow: none; }
+
+.btn-outline {
+  padding: 11px 22px;
+  background: transparent;
+  color: #d0dcf0;
+  font-weight: 500;
+  font-size: 14px;
+  border: 1px solid #0f2244;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-outline:hover { border-color: #3a5895; color: #fff; }
+
+.signup-note {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: #2c4880;
+  margin: 0;
+}
+
+.signup-form input:disabled { opacity: 0.55; cursor: default; }
+
+/* Inline announcement bar that replaces the form-actions buttons after submit */
+.wc-rule { flex: 1; height: 1px; background: #0c1e3e; min-width: 4px; }
+.wc-text {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: #5c8de8;
+  white-space: nowrap;
+}
+.wc-reset {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #3a5895;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid #1a3060;
+  border-radius: 999px;
+  padding: 5px 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  line-height: 1;
+  transition: color 0.15s, border-color 0.15s;
+}
+.wc-reset:hover { color: #5c8de8; border-color: #3060c8; }
+
+.socials {
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  opacity: 0;
+  animation: rise 1.2s 1.0s ease-out forwards;
+}
+.socials a {
+  width: 34px; height: 34px;
+  border: 1px solid #0c1e3e;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2c4880;
+  transition: border-color 0.2s, color 0.2s;
+}
+.socials a:hover { border-color: #3060c8; color: #5c8de8; }
+
+/* ---- footer ---- */
+footer.site-footer {
+  border-top: 1px solid #070f28;
+  padding: clamp(12px, 1.8vh, 24px) clamp(20px, 5vw, 80px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: #2c4880;
+}
+footer.site-footer a { color: #3a5895; transition: color 0.2s; }
+footer.site-footer a:hover { color: #5c8de8; }
+
+/* ---- responsive ---- */
+@media (max-width: 800px) {
+  .hero { grid-template-columns: 1fr; gap: clamp(8px, 1.5vh, 16px); align-items: start; }
+  .hero-logo { order: -1; max-height: min(38vw, 200px); }
+  .hero-logo img { width: min(38vw, 200px); height: min(38vw, 200px); }
+  .hero-content { align-items: center; }
+  .hero-title { text-align: center; }
+  .hero-desc { text-align: center; }
+  .cta-wrap { align-items: center; }
+  .socials { justify-content: center; }
+  .signup-form { max-width: 100%; }
+  .form-actions { justify-content: center; }
+}
+@media (max-width: 480px) {
+  .hero-title .t3 { -webkit-text-stroke: 1px #d0dcf0; }
+  .signup-form input { font-size: 16px; } /* prevent iOS zoom on focus */
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .hero-logo, .hero-title .t1, .hero-title .t2, .hero-title .t3, .hero-desc, .event-meta, .cta-wrap, .socials { opacity: 1; }
+}
