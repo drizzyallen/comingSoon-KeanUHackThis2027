@@ -332,7 +332,7 @@ const ComingSoon: React.FC = () => {
                         {isSubmitting ? 'Sending…' : 'Join waitlist →'}
                       </button>
                       <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScmMw0Noebqr39XY5PMUeYOhC0F8jpGAUtZhYthNRdqT9KaeA/viewform?usp=publish-editor" className="btn-outline">Sponsor us</a>
-                      <a target="_blank" href="https://www.keanuhackthis.com/" className="btn-outline">KeanUHackThis 2026</a>
+                      <a target="_blank" href="https://keanuhackthis-ten.vercel.app/" className="btn-outline">KeanUHackThis 2026</a>
                     </>
                   )}
                 </div>
