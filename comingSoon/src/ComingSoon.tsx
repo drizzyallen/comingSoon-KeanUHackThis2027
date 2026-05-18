@@ -327,14 +327,12 @@ const ComingSoon: React.FC = () => {
                       <span className="wc-rule"></span>
                     </>
                   ) : (
-                    <>
-                      <button type="submit" className="btn-amber" id="signup-btn" disabled={isSubmitting}>
-                        {isSubmitting ? 'Sending…' : 'Join waitlist →'}
-                      </button>
-                      <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScmMw0Noebqr39XY5PMUeYOhC0F8jpGAUtZhYthNRdqT9KaeA/viewform?usp=publish-editor" className="btn-outline">Sponsor us</a>
-                      <a target="_blank" href="https://keanuhackthis-ten.vercel.app/" className="btn-outline">KeanUHackThis 2026</a>
-                    </>
+                    <button type="submit" className="btn-amber" id="signup-btn" disabled={isSubmitting}>
+                      {isSubmitting ? 'Sending…' : 'Join waitlist →'}
+                    </button>
                   )}
+                  <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScmMw0Noebqr39XY5PMUeYOhC0F8jpGAUtZhYthNRdqT9KaeA/viewform?usp=publish-editor" className="btn-outline">Sponsor us</a>
+                  <a target="_blank" href="https://keanuhackthis-ten.vercel.app/" className="btn-outline">KeanUHackThis 2026</a>
                 </div>
               </form>
               {errorMessage && <p className="signup-error-text" style={{ color: '#ff4d4d', marginTop: '10px', fontSize: '0.9rem', fontWeight: 500 }}>{errorMessage}</p>}
