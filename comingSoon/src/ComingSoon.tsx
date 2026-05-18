@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import './ComingSoon.css';
 import hackathonLogo from './assets/hackathon_logo2026-DUlc7zPj.png';
 import { supabase } from './supabase';
+import PhotoGallery from './PhotoGallery';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -13,6 +14,7 @@ const ComingSoon: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showScrollGuide, setShowScrollGuide] = useState(true);
 
   const t1Ref = useRef<HTMLSpanElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -244,7 +246,27 @@ const ComingSoon: React.FC = () => {
       <div className="aurora"></div>
       <canvas id="bg" ref={canvasRef}></canvas>
 
-      <div className="page">
+      {/* Floating Scroll Guide */}
+      <div className={`scroll-guide ${showScrollGuide ? 'visible' : 'hidden'}`}>
+        <div className="scroll-guide-inner">
+          <span>scroll down for our last hackathon photos</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+          </svg>
+        </div>
+      </div>
+
+      <div 
+        className="page"
+        onScroll={(e) => {
+          if (e.currentTarget.scrollTop > 50 && showScrollGuide) {
+            setShowScrollGuide(false);
+          } else if (e.currentTarget.scrollTop <= 50 && !showScrollGuide) {
+            setShowScrollGuide(true);
+          }
+        }}
+      >
         {/* announce bar */}
         <div className="announce">
           <span className="rule"></span>
@@ -367,6 +389,9 @@ const ComingSoon: React.FC = () => {
             </div>
           </div>
         </main>
+
+        {/* photo gallery */}
+        <PhotoGallery />
 
         {/* footer */}
         <footer className="site-footer">

@@ -414,6 +414,50 @@ footer.site-footer {
 footer.site-footer a { color: #3a5895; transition: color 0.2s; }
 footer.site-footer a:hover { color: #5c8de8; }
 
+/* ---- floating scroll guide ---- */
+.scroll-guide {
+  position: absolute;
+  bottom: 24px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  z-index: 50;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  animation: rise 1.2s 1.5s ease-out forwards;
+}
+.scroll-guide.visible {
+  opacity: 1;
+}
+.scroll-guide.hidden {
+  opacity: 0 !important;
+  transform: translateY(15px);
+}
+
+.scroll-guide-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fce181;
+  animation: moon-float 4.5s ease-in-out infinite;
+}
+.scroll-guide-inner svg {
+  filter: drop-shadow(0 0 10px rgba(252, 225, 129, 0.6));
+}
+
+@keyframes moon-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-18px); }
+}
+
+
 /* ---- responsive ---- */
 @media (max-width: 800px) {
   .hero { grid-template-columns: 1fr; gap: clamp(8px, 1.5vh, 16px); align-items: start; }
